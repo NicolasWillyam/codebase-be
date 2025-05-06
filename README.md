@@ -83,6 +83,84 @@ backend/
 │       └── e2e/
 ```
 
+## Tour Structure
+
+```
+backend/src/modules/tour/
+├── application/
+│   ├── use-cases/
+│   │   ├── create-tour.use-case.ts
+│   │   ├── get-tour-detail.use-case.ts
+│   │   └── list-tours.use-case.ts
+│   └── ports/
+│       └── tour.repository.ts       ← Interface inject repository
+│
+├── domain/
+│   ├── tour.entity.ts               ← Entity định nghĩa fields + logic nghiệp vụ
+│   └── value-objects/
+│       └── tour-id.vo.ts            ← ValueObject (nếu bạn cần ID, Date dạng riêng)
+│
+├── infrastructure/
+│   ├── controllers/
+│   │   └── tour.controller.ts       ← Định nghĩa route HTTP
+│   ├── repositories/
+│   │   └── typeorm-tour.repository.ts  ← Adapter kết nối DB (TypeORM)
+│   └── dto/
+│       ├── create-tour.dto.ts
+│       └── book-tour.dto.ts
+│
+├── tour.module.ts                   ← Module tổng tour
+```
+
+## Auth Structure
+
+```
+src/modules/auth/
+├── auth.module.ts
+├── application/
+│   ├── jwt.strategy.ts
+│   ├── use-cases/
+│   │   ├── register.use-case.ts
+│   │   ├── login.use-case.ts
+│   │   ├── change-password.use-case.ts       ← Đổi mật khẩu
+│   │   ├── forgot-password.use-case.ts       ← Gửi token quên mật khẩu
+│   │   └── reset-password.use-case.ts        ← Đặt lại mật khẩu mới
+├── domain/
+│   └── user-role.enum.ts                     ← Enum định nghĩa vai trò user
+├── infrastructure/
+│   ├── controllers/
+│   │   └── auth.controller.ts                ← Xử lý các route auth
+│   ├── guards/
+│   │   ├── jwt-auth.guard.ts
+│   │   └── roles.guard.ts
+│   └── decorators/
+│       └── roles.decorator.ts
+└── dto/
+    ├── login.dto.ts
+    ├── register.dto.ts
+    ├── change-password.dto.ts               ← Body đổi mật khẩu
+    ├── forgot-password.dto.ts               ← Body gửi email quên mật khẩu
+    └── reset-password.dto.ts                ← Body đặt lại mật khẩu
+
+```
+
+## Vai trò Mô tả quyền hạn chính
+
+```
+| admin    | Toàn quyền quản lý tour, booking, người dùng, thống kê, cập nhật hệ thống
+| staff	   | Nhân viên xử lý booking, xác nhận đơn đặt tour, liên hệ khách hàng
+| guide	   | Hướng dẫn viên, xem lịch trình tour mình tham gia, xác nhận tham gia
+| partner	 | Đại lý hoặc bên thứ ba đăng tour hoặc liên kết (nếu bạn muốn hỗ trợ tour affiliate)
+| user	   | Người dùng bình thường: xem tour, đặt tour, xem lịch sử cá nhân
+| guest	   | Chưa đăng nhập – chỉ có thể xem danh sách tour, không đặt
+```
+
+### Role Hierarchy
+
+```
+guest < user < guide < staff < admin
+```
+
 ## Compile and run the project
 
 ```bash
@@ -134,4 +212,5 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
 # codebase-be
