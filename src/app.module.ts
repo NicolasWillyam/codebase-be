@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ConfigModule } from './config/config.module';
-import { CampaignModule } from './modules/campaign/campaign.module';
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
@@ -23,7 +22,6 @@ import { AuthModule } from './modules/auth/auth.module';
       }),
     }),
     AuthModule,
-    CampaignModule,
   ],
 })
 export class AppModule {}
