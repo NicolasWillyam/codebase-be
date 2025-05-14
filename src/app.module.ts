@@ -3,6 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ConfigModule } from './config/config.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { TourModule } from './modules/tour/tour.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { ReviewModule } from './modules/review/review.module';
+import { HomestayModule } from './modules/homestay/homestay.module';
 
 @Module({
   imports: [
@@ -22,6 +26,10 @@ import { AuthModule } from './modules/auth/auth.module';
       }),
     }),
     AuthModule,
+    TourModule,
+    BookingModule,
+    ReviewModule,
+    HomestayModule,
   ],
 })
 export class AppModule {}

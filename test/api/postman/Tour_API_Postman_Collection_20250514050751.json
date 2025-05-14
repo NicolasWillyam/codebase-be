@@ -1,0 +1,154 @@
+{
+  "info": {
+    "name": "Tour API",
+    "_postman_id": "tour-api-collection-id",
+    "description": "Collection to test Tour APIs (List, Detail, Create, Update, Delete)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET - List Tours (search & paginate)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/tours?keyword=\u0111\u00e0&page=1&limit=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "tours"
+          ],
+          "query": [
+            {
+              "key": "keyword",
+              "value": "\u0111\u00e0"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET - Get Tour Detail by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/tours/:id",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "tours",
+            ":id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST - Create Tour (Admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Tour \\u0110\\u00e0 L\\u1ea1t 3N2\\u0110\",\n  \"thumbnail\": \"https://example.com/dalat.jpg\",\n  \"shortDescription\": \"Kh\\u00e1m ph\\u00e1 th\\u00e0nh ph\\u1ed1 ng\\u00e0n hoa\",\n  \"fullDescription\": \"H\\u00e0nh tr\\u00ecnh 3 ng\\u00e0y 2 \\u0111\\u00eam h\\u1ea5p d\\u1eabn\",\n  \"schedule\": \"Ng\\u00e0y 1 - Ng\\u00e0y 2 - Ng\\u00e0y 3\",\n  \"services\": \"Xe \\u0111\\u01b0a \\u0111\\u00f3n, \\u0103n u\\u1ed1ng, v\\u00e9 tham quan\",\n  \"price\": 2900000\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/tours",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "tours"
+          ]
+        }
+      }
+    },
+    {
+      "name": "PUT - Update Tour by ID (Admin)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Tour \\u0110\\u00e0 L\\u1ea1t - M\\u1edbi c\\u1eadp nh\\u1eadt\",\n  \"price\": 3100000\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/tours/:id",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "tours",
+            ":id"
+          ]
+        }
+      }
+    },
+    {
+      "name": "DELETE - Delete Tour by ID (Admin)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/tours/:id",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "tours",
+            ":id"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": ""
+    }
+  ]
+}

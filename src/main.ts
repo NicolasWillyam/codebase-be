@@ -34,13 +34,13 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup(swaggerPath, app, document);
 
-    logger.log(`📘 Swagger available at /${swaggerPath}`);
+    logger.log(`Swagger available at /${swaggerPath}`);
   }
 
   // ======= Port Setup =======
   const port = configService.get<number>('PORT') || 3000;
   await app.listen(port);
 
-  logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  logger.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();
