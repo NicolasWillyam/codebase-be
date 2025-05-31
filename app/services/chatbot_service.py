@@ -10,7 +10,7 @@ from app.models.chatbot import GeminiHaGiangChatbot
 load_dotenv()
 # Khởi tạo chatbot
 chatbot = GeminiHaGiangChatbot(
-    api_key="AIzaSyCfJQx24s-A9hLO9uH3dCn2IWlV4j3W--0",
+    api_key=os.getenv("GEMINI_API_KEY"),
 )
 
 

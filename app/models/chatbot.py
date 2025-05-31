@@ -14,7 +14,7 @@ class GeminiHaGiangChatbot:
     def __init__(
         self,
         model_name: str = "gemini-2.0-flash",
-        api_key: str = "AIzaSyCfJQx24s-A9hLO9uH3dCn2IWlV4j3W--0",
+        api_key: str = None,
         system_prompt: str = None,
     ):
         """
