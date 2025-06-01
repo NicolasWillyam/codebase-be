@@ -11,7 +11,7 @@ import { HomestayModule } from './modules/homestay/homestay.module'; // Quản l
 
 @Module({
   imports: [
-    ConfigModule, // Nạp module cấu hình dùng toàn cục
+    ConfigModule, // Nạp module cấu hình dùng toàn bộ
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
