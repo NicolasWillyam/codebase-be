@@ -12,6 +12,7 @@ import { ResetPasswordDto } from '../../dto/reset-password.dto';
 import { LoginDto } from '../../dto/login.dto';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -46,6 +47,7 @@ export class AuthController {
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.forgotPasswordUseCase.execute(dto.email);
   }
+
 
   @Post('reset-password')
   async resetPassword(@Body() dto: ResetPasswordDto) {
