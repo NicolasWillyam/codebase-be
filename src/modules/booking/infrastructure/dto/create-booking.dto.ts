@@ -1,24 +1,46 @@
-import { IsEmail, IsNotEmpty, IsInt, Min, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsEmail, IsDate, Min, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBookingDto {
+  @ApiProperty({ description: 'Tour ID' })
   @IsNotEmpty()
-  fullName: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  phone: string;
-
-  @IsNotEmpty()
+  @IsString()
   tourId: string;
 
-  @IsInt()
+  @ApiProperty({ description: 'Number of adults' })
+  @IsNotEmpty()
+  @IsNumber()
   @Min(1)
-  numberOfGuests: number;
+  numberOfAdults: number;
 
-  @IsDateString()
-  departureDate: string;
+  @ApiProperty({ description: 'Number of children', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  numberOfChildren?: number;
 
-  type: 'tour' | 'homestay';
+  @ApiProperty({ description: 'Customer name' })
+  @IsNotEmpty()
+  @IsString()
+  customerName: string;
+
+  @ApiProperty({ description: 'Customer email' })
+  @IsNotEmpty()
+  @IsEmail()
+  customerEmail: string;
+
+  @ApiProperty({ description: 'Customer phone' })
+  @IsNotEmpty()
+  @IsString()
+  customerPhone: string;
+
+  @ApiProperty({ description: 'Start date of the tour' })
+  @IsNotEmpty()
+  @IsDate()
+  startDate: Date;
+
+  @ApiProperty({ description: 'Special requests', required: false })
+  @IsOptional()
+  @IsString()
+  specialRequests?: string;
 }

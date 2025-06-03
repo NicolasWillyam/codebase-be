@@ -51,4 +51,30 @@ export class TypeOrmBookingRepository implements BookingRepository {
       order: { createdAt: 'DESC' },
     });
   }
+
+  async findAndCountByEmail(
+    email: string,
+    options: {
+      skip?: number;
+      take?: number;
+      where?: {
+        status?: string;
+      };
+      order?: {
+        [key: string]: 'ASC' | 'DESC';
+      };
+    },
+  ): Promise<[BookingEntity[], number]> {
+    const { skip, take, where, order } = options;
+    return this.bookingRepo.findAndCount({
+      where: {
+        email,
+        ...(where?.status && { status: where.status as BookingStatus }),
+      },
+      relations: ['tour'],
+      skip,
+      take,
+      order: order || { createdAt: 'DESC' },
+    });
+  }
 }
