@@ -4,50 +4,42 @@ import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 
-// Load cấu hình từng phần (mỗi config 1 namespace)
+// Load từng phần cấu hình theo từng namespace
 import databaseConfig from './database.config';
-// import geminiConfig from './gemini.config'; // Bạn có thể mở lại khi cần
+// import geminiConfig from './gemini.config'; // Bỏ comment khi sử dụng Gemini
 
 @Module({
   imports: [
     NestConfigModule.forRoot({
-      isGlobal: true, // Đảm bảo ConfigModule dùng toàn cục, không cần import lại ở các module khác
+      isGlobal: true, // Dùng toàn cục, không cần import ở các module khác
       load: [
         databaseConfig,
-        // geminiConfig
+        // geminiConfig, // <-- Kích hoạt khi cần
       ],
       validationSchema: Joi.object({
-        /**
-         * ==== App Environment ====
-         */
+        /** ==== App Environment ==== */
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
 
-        PORT: Joi.number().default(3000), // Cổng mặc định chạy app NestJS
+        PORT: Joi.number().default(3000),
 
-        /**
-         * ==== PostgreSQL Database ====
-         */
+        /** ==== PostgreSQL Database ==== */
         POSTGRES_HOST: Joi.string().required(),
         POSTGRES_PORT: Joi.number().default(5432),
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DATABASE: Joi.string().required(),
 
-        /**
-         * ==== JWT Authentication ====
-         */
-        JWT_SECRET: Joi.string().required(), // Bắt buộc có để sign/verify token
-        JWT_EXPIRES_IN: Joi.string().default('1d'), // Token expiration (VD: 1d, 15m)
+        /** ==== JWT Authentication ==== */
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRES_IN: Joi.string().default('1d'),
 
-        /**
-         * ==== (Optional) External services like Gemini ====
-         */
+        /** ==== Optional External Services ==== */
         // GEMINI_API_KEY: Joi.string().optional(),
       }),
       validationOptions: {
-        abortEarly: false, // Hiển thị tất cả lỗi khi thiếu biến, không chỉ lỗi đầu tiên
+        abortEarly: false, // Hiển thị tất cả lỗi validation
       },
     }),
   ],
