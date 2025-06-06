@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { UserRepository } from '@/modules/user/infrastructure/repositories/user.repository';
 import { JwtService } from '@nestjs/jwt';
+import { EmailService } from '@/shared/email/email.service'; 
 
 @Injectable()
 export class ForgotPasswordUseCase {
@@ -9,22 +10,20 @@ export class ForgotPasswordUseCase {
   constructor(
     private readonly userRepo: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService, 
   ) {}
 
   /**
-   *  //gửi token đặt lại mật khẩu qua email
-      @param email 
-      @returns 
+   * Gửi token đặt lại mật khẩu qua email
    */
   async execute(email: string): Promise<{ message: string }> {
-    // Tìm người dùng theo email
     const user = await this.userRepo.findByEmail(email);
     if (!user) {
       this.logger.warn(`Yêu cầu quên mật khẩu với email không tồn tại: ${email}`);
       throw new NotFoundException('Email không tồn tại');
     }
 
-    // Tạo token reset có thời hạn ngắn 
+    // Tạo token JWT
     const resetToken = this.jwtService.sign(
       { sub: user.id },
       {
@@ -33,12 +32,9 @@ export class ForgotPasswordUseCase {
       },
     );
 
-    // 3. (Tạm thời) Log token ra console thay vì gửi email
-    this.logger.log(`Đã tạo token reset cho ${email}: ${resetToken}`);
-    console.log(`Reset password token for ${email}: ${resetToken}`);
+    // Gửi email chứa link đặt lại
+    await this.emailService.sendResetPasswordEmail(email, resetToken);
 
-    // Trong tương lai có thể gọi EmailService.sendResetPasswordMail(email, resetToken)
-
-    return { message: 'Đã gửi mã xác nhận qua email (tạm in log)' };
+    return { message: 'Đã gửi mã xác nhận qua email' };
   }
 }
