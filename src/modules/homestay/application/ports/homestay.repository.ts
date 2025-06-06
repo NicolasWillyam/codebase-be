@@ -3,4 +3,5 @@ import { HomestaySearchQueryDto } from '../../infrastructure/dto/homestay-search
 
 export interface HomestayRepository {
   getHomestays(query: HomestaySearchQueryDto): Promise<HomestayEntity[]>;
+  checkAvailability(homestayId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean>;
 }

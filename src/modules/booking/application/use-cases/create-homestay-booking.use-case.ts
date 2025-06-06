@@ -29,11 +29,11 @@ export class CreateHomestayBookingUseCase {
         throw new InvalidBookingDatesError();
       }
 
-      // TODO: Add availability check
-      // const isAvailable = await this.checkHomestayAvailability(dto.homestayId, checkInDate, checkOutDate);
-      // if (!isAvailable) {
-      //   throw new BookingNotAvailableError('homestay', dto.homestayId);
-      // }
+      // Add availability check
+      const isAvailable = await this.bookingRepo.checkAvailability(dto.homestayId, checkInDate, checkOutDate);
+      if (!isAvailable) {
+        throw new BookingNotAvailableError('homestay', dto.homestayId);
+      }
 
       // TODO: Add guest count validation
       // const maxGuests = await this.getHomestayMaxGuests(dto.homestayId);
