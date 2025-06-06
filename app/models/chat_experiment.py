@@ -25,4 +25,47 @@ và mê hoặc cho những ai yêu thích khám phá và trải nghiệm."""
 for chunk in large_language_multimodality.stream(user_input):
     print(chunk.content, end = '|', flush=True)
 
+import getpass
+import os
 
+try:
+    # load environment variables from .env file (requires `python-dotenv`)
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ImportError:
+    pass
+
+os.environ["LANGSMITH_TRACING"] = "true"
+if "LANGSMITH_API_KEY" not in os.environ:
+    os.environ["LANGSMITH_API_KEY"] = getpass.getpass(
+        prompt="Enter your LangSmith API key (optional): "
+    )
+if "LANGSMITH_PROJECT" not in os.environ:
+    os.environ["LANGSMITH_PROJECT"] = getpass.getpass(
+        prompt='Enter your LangSmith Project Name (default = "default"): '
+    )
+    if not os.environ.get("LANGSMITH_PROJECT"):
+        os.environ["LANGSMITH_PROJECT"] = "default"
+
+import getpass
+import os
+
+if not os.environ.get("GOOGLE_API_KEY"):
+  os.environ["GOOGLE_API_KEY"] = getpass.getpass("Enter API key for Google Gemini: ")
+
+from langchain.chat_models import init_chat_model
+
+model = init_chat_model("gemini-2.0-flash", model_provider="google_genai")
+
+from langchain_core.messages import HumanMessage, SystemMessage
+
+messages = [
+    SystemMessage("Translate the following from English into Italian"),
+    HumanMessage("hi!"),
+]
+
+model.invoke(messages)
+
+for token in model.stream(messages):
+    print(token.content, end="|")
