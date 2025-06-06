@@ -27,3 +27,4 @@ import { TourEntity } from './domain/tour.entity';
   ],
 })
 export class TourModule {}
+
