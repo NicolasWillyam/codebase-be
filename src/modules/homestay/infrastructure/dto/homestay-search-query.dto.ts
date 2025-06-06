@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNumber, Min } from 'class-validator';
+import { IsOptional, IsString, IsNumber, Min, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class HomestaySearchQueryDto {
@@ -27,4 +27,9 @@ export class HomestaySearchQueryDto {
   @IsNumber()
   @Min(1)
   limit?: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  amenities?: string[]; // Thêm trường amenities
 }
