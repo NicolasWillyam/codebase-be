@@ -9,31 +9,41 @@ import { AuthGuard } from '@nestjs/passport';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { UserRole } from '../../domain/user-role.enum';
 
+/**
+ * Guard kiểm tra xác thực (JWT) và phân quyền theo vai trò người dùng
+ */
 @Injectable()
 export class AuthRolesGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(private readonly reflector: Reflector) {
     super();
   }
 
+  /**
+   * Hàm thực hiện xác thực và kiểm tra quyền truy cập
+   */
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // 1. Check JWT (AuthGuard logic)
-    const can = await super.canActivate(context);
-    if (!can) return false;
+    // Kiểm tra xác thực JWT 
+    const isAuthenticated = await super.canActivate(context);
+    if (!isAuthenticated) return false;
 
-    // 2. Get required roles
+    // Lấy ra danh sách role yêu cầu 
     const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
 
-    if (!requiredRoles) return true;
+    // Nếu route không yêu cầu role cụ thể → cho phép qua
+    if (!requiredRoles || requiredRoles.length === 0) return true;
 
+    // Lấy user từ request đã được decode 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    // 3. Check if user has at least one required role
-    const hasRole = requiredRoles.includes(user.role);
-    if (!hasRole) throw new ForbiddenException('You do not have permission');
+    //  Kiểm tra user có role phù hợp không
+    const hasRequiredRole = requiredRoles.includes(user.role);
+    if (!hasRequiredRole) {
+      throw new ForbiddenException('Bạn không có quyền truy cập tài nguyên này');
+    }
 
     return true;
   }
