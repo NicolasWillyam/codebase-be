@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Between } from 'typeorm';
 import { BookingRepository } from '../../application/ports/booking.repository';
 import { BookingEntity } from '../../application/booking.entity';
 import { CreateBookingDto } from '../dto/create-booking.dto';
@@ -50,5 +50,35 @@ export class TypeOrmBookingRepository implements BookingRepository {
       relations: ['tour'],
       order: { createdAt: 'DESC' },
     });
+  }
+
+  async checkAvailability(
+    homestayId: string,
+    checkInDate: Date,
+    checkOutDate: Date,
+  ): Promise<boolean> {
+    const overlappingBookings = await this.bookingRepo.find({
+      where: [
+        { // Existing booking starts within the requested dates
+          homestayId,
+          status: BookingStatus.Confirmed,
+          checkInDate: Between(checkInDate, checkOutDate),
+        },
+        { // Existing booking ends within the requested dates
+          homestayId,
+          status: BookingStatus.Confirmed,
+          checkOutDate: Between(checkInDate, checkOutDate),
+        },
+        { // Existing booking spans the requested dates
+          homestayId,
+          status: BookingStatus.Confirmed,
+          checkInDate: '<= :checkInDate', // Using parameters to avoid SQL injection
+          checkOutDate: '>= :checkOutDate', 
+        }
+      ],
+      parameters: { checkInDate, checkOutDate },
+    });
+
+    return overlappingBookings.length === 0;
   }
 }

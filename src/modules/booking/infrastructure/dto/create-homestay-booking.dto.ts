@@ -6,10 +6,14 @@ import {
   IsDateString,
   Min,
   IsInt,
+  Validate,
+  ValidationArguments,
 } from 'class-validator';
+import { IsAfterDate } from '../validators/is-after-date.validator';
 
 export class CreateHomestayBookingDto {
   @IsUUID()
+  @IsNotEmpty()
   homestayId: string;
 
   @IsNotEmpty()
@@ -22,9 +26,12 @@ export class CreateHomestayBookingDto {
   phone: string;
 
   @IsDateString()
+  @IsNotEmpty()
   checkInDate: string;
 
   @IsDateString()
+  @IsNotEmpty()
+  @Validate(IsAfterDate, ['checkInDate'])
   checkOutDate: string;
 
   @IsInt()

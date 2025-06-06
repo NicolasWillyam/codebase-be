@@ -8,4 +8,5 @@ export interface BookingRepository {
   createBooking(data: Partial<BookingEntity>): Promise<BookingEntity>;
   updateStatus(id: string, status: 'confirmed' | 'cancelled'): Promise<void>;
   findByEmail(email: string): Promise<BookingEntity[]>;
+  checkAvailability(homestayId: string, checkInDate: Date, checkOutDate: Date): Promise<boolean>;
 }
