@@ -1,47 +1,61 @@
-// src/modules/auth/application/use-cases/register.use-case.ts
-
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, Logger } from '@nestjs/common';
 import { UserRepository } from '@/modules/user/infrastructure/repositories/user.repository';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { UserRole } from '../../domain/user-role.enum';
 import { RegisterDto } from '../../dto/register.dto';
+import { UserRole } from '../../domain/user-role.enum';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class RegisterUseCase {
+  private readonly logger = new Logger(RegisterUseCase.name);
+  private readonly SALT_ROUNDS = 10;
+
   constructor(
     private readonly userRepo: UserRepository,
     private readonly jwtService: JwtService,
   ) {}
 
   async execute(input: RegisterDto) {
-    // 1. Kiểm tra email đã tồn tại chưa
-    const existingUser = await this.userRepo.findByEmail(input.email);
+    await this.ensureEmailNotExists(input.email);
+
+    const hashedPassword = await this.hashPassword(input.password);
+
+    const newUser = await this.createUser(input, hashedPassword);
+
+    const accessToken = this.generateToken(newUser);
+
+    this.logger.log(`📥 Tài khoản mới đã được tạo: ${newUser.email}`);
+
+    return { access_token: accessToken };
+  }
+
+  //kiem tra email da duoc dung chua
+  private async ensureEmailNotExists(email: string): Promise<void> {
+    const existingUser = await this.userRepo.findByEmail(email);
     if (existingUser) {
+      this.logger.warn(` Email đã tồn tại: ${email}`);
       throw new ConflictException('Email đã được sử dụng');
     }
+  }
 
-    // 2. Mã hoá password bằng bcrypt
-    const hashedPassword = await bcrypt.hash(input.password, 10);
+  private async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, this.SALT_ROUNDS);
+  }
 
-    // 3. Lưu user mới vào DB
-    const newUser = await this.userRepo.createUser({
+  private async createUser(input: RegisterDto, hashedPassword: string) {
+    return this.userRepo.createUser({
       email: input.email,
       name: input.name,
       password: hashedPassword,
-      role: UserRole.User, // gán role mặc định
+      role: UserRole.User,
     });
+  }
 
-    // 4. Tạo JWT access token
-    const accessToken = this.jwtService.sign({
-      sub: newUser.id,
-      email: newUser.email,
-      role: newUser.role,
+  private generateToken(user: any): string {
+    return this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
     });
-
-    // 5. Trả token cho client
-    return {
-      access_token: accessToken,
-    };
   }
 }
