@@ -33,7 +33,12 @@ export class TypeOrmHomestayRepository implements HomestayRepository {
         { keyword: `%${query.keyword}%` },
       );
     }
+    
+    qb.orderBy('homestay.createdAt', 'DESC');
 
-    return qb.orderBy('homestay.createdAt', 'DESC').getMany();
+    if (query.page && query.limit) {
+    qb.take(query.limit).skip((query.page - 1) * query.limit);
+    }
+    return qb.getMany();
   }
 }
