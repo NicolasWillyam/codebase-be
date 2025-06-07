@@ -11,9 +11,15 @@ import { UpdateBookingStatusUseCase } from './application/use-cases/update-booki
 import { GetMyBookingsUseCase } from './application/use-cases/get-my-bookings.use-case';
 import { HomestayBookingController } from './infrastructure/controllers/homestay.booking.controller';
 import { CreateHomestayBookingDto } from './infrastructure/dto/create-homestay-booking.dto';
+import { TourEntity } from '@/modules/tour/domain/tour.entity';
+import { HomestayEntity } from '@/modules/homestay/domain/homestay.entity';
+import { PaymentModule } from '@/modules/payment/payment.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BookingEntity])],
+  imports: [
+    TypeOrmModule.forFeature([BookingEntity, TourEntity, HomestayEntity]),
+    PaymentModule,
+  ],
   controllers: [TourBookingController, HomestayBookingController],
   providers: [
     {

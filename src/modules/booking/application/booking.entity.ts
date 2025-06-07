@@ -58,6 +58,16 @@ export class BookingEntity {
   @Column({ type: 'enum', enum: BookingStatus, default: BookingStatus.Pending })
   status: BookingStatus;
 
+  // Payment related fields
+  @Column({ nullable: true })
+  paymentId?: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  totalAmount?: number;
+
+  @Column({ nullable: true })
+  paymentStatus?: 'pending' | 'completed' | 'failed';
+
   @CreateDateColumn()
   createdAt: Date;
 }

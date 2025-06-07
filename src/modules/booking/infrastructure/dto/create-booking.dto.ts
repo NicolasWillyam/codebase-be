@@ -1,43 +1,52 @@
-import { IsNotEmpty, IsString, IsNumber, IsEmail, IsDate, Min, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsEmail, IsDate, Min, IsOptional, IsEnum, IsPhoneNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBookingDto {
-  @ApiProperty({ description: 'Tour ID' })
+  @ApiProperty({ description: 'Customer full name' })
   @IsNotEmpty()
   @IsString()
-  tourId: string;
-
-  @ApiProperty({ description: 'Number of adults' })
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  numberOfAdults: number;
-
-  @ApiProperty({ description: 'Number of children', required: false })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  numberOfChildren?: number;
-
-  @ApiProperty({ description: 'Customer name' })
-  @IsNotEmpty()
-  @IsString()
-  customerName: string;
+  fullName: string;
 
   @ApiProperty({ description: 'Customer email' })
   @IsNotEmpty()
   @IsEmail()
-  customerEmail: string;
+  email: string;
 
   @ApiProperty({ description: 'Customer phone' })
   @IsNotEmpty()
-  @IsString()
-  customerPhone: string;
+  @IsPhoneNumber()
+  phone: string;
 
-  @ApiProperty({ description: 'Start date of the tour' })
+  @ApiProperty({ description: 'Booking type (tour or homestay)' })
   @IsNotEmpty()
+  @IsEnum(['tour', 'homestay'])
+  type: 'tour' | 'homestay';
+
+  @ApiProperty({ description: 'Tour ID (required if type is tour)' })
+  @IsOptional()
+  @IsString()
+  tourId?: string;
+
+  @ApiProperty({ description: 'Homestay ID (required if type is homestay)' })
+  @IsOptional()
+  @IsString()
+  homestayId?: string;
+
+  @ApiProperty({ description: 'Check-in date (required for homestay)' })
+  @IsOptional()
   @IsDate()
-  startDate: Date;
+  checkInDate?: Date;
+
+  @ApiProperty({ description: 'Check-out date (required for homestay)' })
+  @IsOptional()
+  @IsDate()
+  checkOutDate?: Date;
+
+  @ApiProperty({ description: 'Number of guests' })
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  numberOfGuests: number;
 
   @ApiProperty({ description: 'Special requests', required: false })
   @IsOptional()
