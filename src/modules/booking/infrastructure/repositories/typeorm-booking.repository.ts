@@ -25,7 +25,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
     });
   }
 
-  // ✅ 1. Lấy booking theo ID
+  //  1. Lấy booking theo ID
   async findById(id: string): Promise<BookingEntity | null> {
     return this.bookingRepo.findOne({
       where: { id },
@@ -33,7 +33,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
     });
   }
 
-  // ✅ 2. Cập nhật trạng thái (confirmed, cancelled)
+  //  2. Cập nhật trạng thái (confirmed, cancelled)
   async updateStatus(
     id: string,
     status: 'confirmed' | 'cancelled',
@@ -43,7 +43,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
     });
   }
 
-  // ✅ 3. Tìm booking của 1 user theo email
+  //  3. Tìm booking của 1 user theo email
   async findByEmail(email: string): Promise<BookingEntity[]> {
     return this.bookingRepo.find({
       where: { email },
