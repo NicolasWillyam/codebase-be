@@ -1,29 +1,29 @@
 // domain/entities/tour.entity.ts
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('tours')
+@Entity({ name: 'tours' })
 export class TourEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column()
+  @Column({ type: 'text' })
   thumbnail: string;
 
-  @Column({ name: 'short_description' })
+  @Column({ name: 'short_description', type: 'text' })
   shortDescription: string;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @Column({ name: 'full_description' })
+  @Column({ name: 'full_description', type: 'text' })
   fullDescription: string;
 
-  @Column()
+  @Column({ type: 'text' })
   schedule: string;
 
-  @Column()
+  @Column({ type: 'text' })
   services: string;
 }
