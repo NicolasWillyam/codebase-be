@@ -31,7 +31,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
     });
   }
 
-  // ✅ 1. Lấy booking theo ID
+  //  1. Lấy booking theo ID
   async findById(id: string): Promise<BookingEntity | null> {
     return this.bookingRepo.findOne({
       where: { id },
@@ -39,7 +39,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
     });
   }
 
-  // ✅ 2. Cập nhật trạng thái (confirmed, cancelled)
+  //  2. Cập nhật trạng thái (confirmed, cancelled)
   async updateStatus(
     id: string,
     status: 'confirmed' | 'cancelled',
@@ -49,7 +49,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
     });
   }
 
-  // ✅ 3. Tìm booking của 1 user theo email
+  //  3. Tìm booking của 1 user theo email
   async findByEmail(email: string): Promise<BookingEntity[]> {
     return this.bookingRepo.find({
       where: { email },
@@ -58,6 +58,42 @@ export class TypeOrmBookingRepository implements BookingRepository {
     });
   }
 
+  async findByEmail(email: string): Promise<BookingEntity[]> {
+    return this.bookingRepo.find({
+      where: { email },
+      relations: ['tour'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // ✅ Thêm phương thức mới từ nhánh feature/booking
+  async findAndCountByEmail(
+    email: string,
+    options: {
+      skip?: number;
+      take?: number;
+      where?: {
+        status?: string;
+      };
+      order?: {
+        [key: string]: 'ASC' | 'DESC';
+      };
+    },
+  ): Promise<[BookingEntity[], number]> {
+    const { skip, take, where, order } = options;
+    return this.bookingRepo.findAndCount({
+      where: {
+        email,
+        ...(where?.status && { status: where.status as BookingStatus }),
+      },
+      relations: ['tour'],
+      skip,
+      take,
+      order: order || { createdAt: 'DESC' },
+    });
+  }
+
+  // ✅ Thêm phương thức checkAvailability từ nhánh main
   async checkAvailability(
     homestayId: string,
     checkInDate: Date,
@@ -79,7 +115,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
           homestayId,
           status: BookingStatus.Confirmed,
           checkInDate: '<= :checkInDate', // Using parameters to avoid SQL injection
-          checkOutDate: '>= :checkOutDate', 
+          checkOutDate: '>= :checkOutDate',
         }
       ],
       parameters: { checkInDate, checkOutDate },
@@ -112,3 +148,4 @@ export class TypeOrmBookingRepository implements BookingRepository {
     await this.bookingRepo.update(id, { paymentStatus });
   }
 }
+

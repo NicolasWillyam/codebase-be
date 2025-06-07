@@ -3,6 +3,17 @@ import { BookingEntity } from '../booking.entity';
 import { TourEntity } from '@/modules/tour/domain/tour.entity';
 import { HomestayEntity } from '@/modules/homestay/domain/homestay.entity';
 
+interface FindOptions {
+  skip?: number;
+  take?: number;
+  where?: {
+    status?: string;
+  };
+  order?: {
+    [key: string]: 'ASC' | 'DESC';
+  };
+}
+
 export interface BookingRepository {
   createBooking(dto: CreateBookingDto): Promise<BookingEntity>;
   findAllBookings(): Promise<BookingEntity[]>;
