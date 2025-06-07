@@ -5,12 +5,18 @@ import { BookingRepository } from '../../application/ports/booking.repository';
 import { BookingEntity } from '../../application/booking.entity';
 import { CreateBookingDto } from '../dto/create-booking.dto';
 import { BookingStatus } from '../../application/constants/booking-status.enum';
+import { TourEntity } from '@/modules/tour/domain/tour.entity';
+import { HomestayEntity } from '@/modules/homestay/domain/homestay.entity';
 
 @Injectable()
 export class TypeOrmBookingRepository implements BookingRepository {
   constructor(
     @InjectRepository(BookingEntity)
     private readonly bookingRepo: Repository<BookingEntity>,
+    @InjectRepository(TourEntity)
+    private readonly tourRepo: Repository<TourEntity>,
+    @InjectRepository(HomestayEntity)
+    private readonly homestayRepo: Repository<HomestayEntity>,
   ) {}
 
   async createBooking(data: Partial<BookingEntity>): Promise<BookingEntity> {
@@ -20,7 +26,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
 
   async findAllBookings(): Promise<BookingEntity[]> {
     return this.bookingRepo.find({
-      relations: ['tour'],
+      relations: ['tour', 'homestay'],
       order: { createdAt: 'DESC' },
     });
   }
@@ -29,7 +35,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
   async findById(id: string): Promise<BookingEntity | null> {
     return this.bookingRepo.findOne({
       where: { id },
-      relations: ['tour'],
+      relations: ['tour', 'homestay'],
     });
   }
 
@@ -47,7 +53,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
   async findByEmail(email: string): Promise<BookingEntity[]> {
     return this.bookingRepo.find({
       where: { email },
-      relations: ['tour'],
+      relations: ['tour', 'homestay'],
       order: { createdAt: 'DESC' },
     });
   }
@@ -80,5 +86,29 @@ export class TypeOrmBookingRepository implements BookingRepository {
     });
 
     return overlappingBookings.length === 0;
+  }
+
+  // New methods for payment integration
+  async findTourById(id: string): Promise<TourEntity> {
+    const tour = await this.tourRepo.findOneBy({ id });
+    if (!tour) {
+      throw new Error(`Tour with id ${id} not found`);
+    }
+    return tour;
+  }
+
+  async findHomestayById(id: string): Promise<HomestayEntity> {
+    const homestay = await this.homestayRepo.findOneBy({ id });
+    if (!homestay) {
+      throw new Error(`Homestay with id ${id} not found`);
+    }
+    return homestay;
+  }
+
+  async updatePaymentStatus(
+    id: string,
+    paymentStatus: 'pending' | 'completed' | 'failed',
+  ): Promise<void> {
+    await this.bookingRepo.update(id, { paymentStatus });
   }
 }

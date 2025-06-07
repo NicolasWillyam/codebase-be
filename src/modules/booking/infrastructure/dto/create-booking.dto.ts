@@ -1,27 +1,34 @@
-import { IsEmail, IsNotEmpty, IsInt, Min, IsDateString, IsPhoneNumber } from 'class-validator';
+import { IsString, IsEmail, IsPhoneNumber, IsEnum, IsNumber, IsOptional, IsDate } from 'class-validator';
 
 export class CreateBookingDto {
-  @IsNotEmpty()
+  @IsString()
   fullName: string;
 
   @IsEmail()
-  @IsNotEmpty()
   email: string;
 
-  @IsNotEmpty()
-  @IsPhoneNumber('VN')
+  @IsPhoneNumber()
   phone: string;
 
-  @IsNotEmpty()
-  tourId: string;
-
-  @IsInt()
-  @Min(1)
-  numberOfGuests: number;
-
-  @IsDateString()
-  @IsNotEmpty()
-  departureDate: string;
-
+  @IsEnum(['tour', 'homestay'])
   type: 'tour' | 'homestay';
+
+  @IsString()
+  @IsOptional()
+  tourId?: string;
+
+  @IsString()
+  @IsOptional()
+  homestayId?: string;
+
+  @IsDate()
+  @IsOptional()
+  checkInDate?: Date;
+
+  @IsDate()
+  @IsOptional()
+  checkOutDate?: Date;
+
+  @IsNumber()
+  numberOfGuests: number;
 }
