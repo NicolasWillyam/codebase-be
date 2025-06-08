@@ -71,6 +71,31 @@ export class PaymentController {
     // Tại đây bạn có thể update đơn hàng tương ứng
     return res.status(HttpStatus.OK).send('Thanh toán thành công');
   }
+  /**
+ * Lấy trạng thái thanh toán theo mã đơn hàng
+ */
+@Get('status')
+async getPaymentStatus(@Query('orderId') orderId: string, @Res() res: Response) {
+  if (!orderId) {
+    return res.status(HttpStatus.BAD_REQUEST).json({ message: 'orderId is required' });
+  }
+
+  // Gọi service để lấy trạng thái thanh toán (giả lập hoặc DB)
+  const status = await this.vnpayService.getPaymentStatus(orderId); // hoặc this.momoService
+
+  return res.status(HttpStatus.OK).json({ orderId, status });
+}
+/**
+ * Hủy thanh toán theo orderId
+ */
+@Post('cancel')
+async cancelPayment(@Body() body: { orderId: string }, @Res() res: Response) {
+  const { orderId } = body;
+
+  const result = await this.vnpayService.cancelPayment(orderId); // giả định có hàm này
+  return res.status(HttpStatus.OK).json({ success: result });
+}
+
 
   /**
    * Callback từ MoMo (IPN)
