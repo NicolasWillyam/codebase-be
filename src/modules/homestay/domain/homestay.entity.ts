@@ -1,8 +1,9 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
+  PrimaryGeneratedColumn,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('homestays')
@@ -13,21 +14,57 @@ export class HomestayEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'text' })
+  @Column({ nullable: true })
+  slug?: string;
+
+  @Column('text')
   description: string;
 
   @Column()
-  pricePerNight: number;
-
-  @Column({ type: 'text', array: true })
-  amenities: string[]; // tiện nghi: ["Wifi", "Điều hòa", "Máy sấy", ...]
-
-  @Column({ type: 'text', array: true })
-  images: string[]; // danh sách URL ảnh
+  address: string;
 
   @Column()
-  location: string; // ví dụ: "Đà Lạt", "Sapa",...
+  city: string;
+
+  @Column()
+  country: string;
+
+  @Column('float')
+  latitude: number;
+
+  @Column('float')
+  longitude: number;
+
+  @Column('simple-array') // store comma-separated image URLs
+  images: string[];
+
+  @Column('jsonb')
+  rooms: {
+    guestCount: number;
+    bedroomCount: number;
+    bedCount: number;
+    bathroomCount: number;
+    floor: number;
+    hasKitchen: boolean;
+    hasLivingRoom: boolean;
+  };
+
+  @Column('jsonb')
+  amenities: {
+    icon: string;
+    label: string;
+    category?: string;
+  }[];
+
+  @Column({ default: false })
+  isFavorite: boolean;
+
+  @Column('int')
+  pricePerNight: number;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

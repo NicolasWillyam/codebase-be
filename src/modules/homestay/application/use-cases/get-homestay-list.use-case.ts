@@ -1,7 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { HomestayRepository } from '../ports/homestay.repository';
-import { HomestaySearchQueryDto } from '../../infrastructure/dto/homestay-search-query.dto';
 import { HomestayEntity } from '../../domain/homestay.entity';
+import { HomestaySearchQueryDto } from '../../domain/dto/homestay-search-query.dto';
 
 @Injectable()
 export class GetHomestayListUseCase {
@@ -11,6 +11,6 @@ export class GetHomestayListUseCase {
   ) {}
 
   async execute(query: HomestaySearchQueryDto): Promise<HomestayEntity[]> {
-    return this.homestayRepo.getHomestays(query);
+    return this.homestayRepo.findAll(query);
   }
 }

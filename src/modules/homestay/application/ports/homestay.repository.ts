@@ -1,6 +1,12 @@
 import { HomestayEntity } from '../../domain/homestay.entity';
-import { HomestaySearchQueryDto } from '../../infrastructure/dto/homestay-search-query.dto';
+import { HomestaySearchQueryDto } from '../../domain/dto/homestay-search-query.dto';
+import { CreateHomestayDto } from '../../domain/dto/create-homestay.dto';
+import { UpdateHomestayDto } from '../../domain/dto/update-homestay.dto';
 
-export interface HomestayRepository {
-  getHomestays(query: HomestaySearchQueryDto): Promise<HomestayEntity[]>;
+export abstract class HomestayRepository {
+  abstract create(dto: CreateHomestayDto): Promise<HomestayEntity>;
+  abstract findAll(query: HomestaySearchQueryDto): Promise<HomestayEntity[]>;
+  abstract findById(id: string): Promise<HomestayEntity>;
+  abstract update(id: string, dto: UpdateHomestayDto): Promise<HomestayEntity>;
+  abstract delete(id: string): Promise<void>;
 }

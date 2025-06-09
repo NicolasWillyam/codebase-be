@@ -3,37 +3,36 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { HomestayRepository } from '../../application/ports/homestay.repository';
 import { HomestayEntity } from '../../domain/homestay.entity';
-import { HomestaySearchQueryDto } from '../dto/homestay-search-query.dto';
+import { HomestaySearchQueryDto } from '../../domain/dto/homestay-search-query.dto';
+import { CreateHomestayDto } from '../../domain/dto/create-homestay.dto';
+import { UpdateHomestayDto } from '../../domain/dto/update-homestay.dto';
 
 @Injectable()
 export class TypeOrmHomestayRepository implements HomestayRepository {
   constructor(
     @InjectRepository(HomestayEntity)
-    private readonly homestayRepo: Repository<HomestayEntity>,
+    private readonly repo: Repository<HomestayEntity>,
   ) {}
 
-  async getHomestays(query: HomestaySearchQueryDto): Promise<HomestayEntity[]> {
-    const qb = this.homestayRepo.createQueryBuilder('homestay');
+  create(dto: CreateHomestayDto) {
+    const entity = this.repo.create(dto);
+    return this.repo.save(entity);
+  }
 
-    if (query.location) {
-      qb.andWhere('homestay.location ILIKE :location', {
-        location: `%${query.location}%`,
-      });
-    }
+  findAll() {
+    return this.repo.find();
+  }
 
-    if (query.maxPrice) {
-      qb.andWhere('homestay.pricePerNight <= :maxPrice', {
-        maxPrice: query.maxPrice,
-      });
-    }
+  findById(id: string) {
+    return this.repo.findOne({ where: { id } });
+  }
 
-    if (query.keyword) {
-      qb.andWhere(
-        '(homestay.name ILIKE :keyword OR homestay.description ILIKE :keyword)',
-        { keyword: `%${query.keyword}%` },
-      );
-    }
+  async update(id: string, dto: UpdateHomestayDto): Promise<HomestayEntity> {
+    await this.repo.update(id, dto);
+    return this.repo.findOneBy({ id });
+  }
 
-    return qb.orderBy('homestay.createdAt', 'DESC').getMany();
+  async delete(id: string): Promise<void> {
+    await this.repo.delete(id);
   }
 }
