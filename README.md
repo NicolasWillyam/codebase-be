@@ -175,6 +175,10 @@ src/modules/auth/
 
 ### Role Hierarchy
 
+Authen -> Xác mình bạn là ai
+Author -> Xác thực bạn có quyền gìgì
+=> JWT -> JSON WEB TOKEN
+
 ```
 
 guest < user < guide < staff < admin

@@ -29,7 +29,11 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() dto: LoginDto) {
-    return this.loginUseCase.execute(dto.email, dto.password);
+    const { accessToken, user } = await this.loginUseCase.execute(
+      dto.email,
+      dto.password,
+    );
+    return { accessToken, user };
   }
 
   @UseGuards(JwtAuthGuard)
