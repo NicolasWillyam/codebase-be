@@ -23,7 +23,7 @@ export class TypeOrmHomestayRepository implements HomestayRepository {
     return this.repo.find();
   }
 
-  findById(id: string) {
+  async findById(id: string): Promise<HomestayEntity | undefined> {
     return this.repo.findOne({ where: { id } });
   }
 

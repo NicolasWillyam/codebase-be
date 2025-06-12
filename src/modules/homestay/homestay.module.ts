@@ -9,6 +9,7 @@ import { CreateHomestayUseCase } from './application/use-cases/create-homestay.u
 import { GetHomestayDetailUseCase } from '../booking/application/use-cases/get-homestay-detail.use-case';
 import { UpdateHomestayUseCase } from './application/use-cases/update-homestay.use-case';
 import { DeleteHomestayUseCase } from './application/use-cases/delete-homestay.use-case';
+import { HomestayRepository } from './application/ports/homestay.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([HomestayEntity])],
@@ -24,5 +25,6 @@ import { DeleteHomestayUseCase } from './application/use-cases/delete-homestay.u
     UpdateHomestayUseCase,
     DeleteHomestayUseCase,
   ],
+  // exports: [HomestayRepository, GetHomestayDetailUseCase],
 })
 export class HomestayModule {}
