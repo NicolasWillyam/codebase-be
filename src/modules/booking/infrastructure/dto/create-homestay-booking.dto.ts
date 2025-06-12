@@ -1,25 +1,26 @@
 import {
   IsEmail,
   IsNotEmpty,
-  IsPhoneNumber,
-  IsUUID,
-  IsDateString,
-  Min,
   IsInt,
+  Min,
+  IsDateString,
+  IsOptional,
+  IsUUID,
+  IsIn,
 } from 'class-validator';
 
 export class CreateHomestayBookingDto {
-  @IsUUID()
-  homestayId: string;
-
   @IsNotEmpty()
   fullName: string;
 
   @IsEmail()
   email: string;
 
-  @IsPhoneNumber('VN')
+  @IsNotEmpty()
   phone: string;
+
+  @IsUUID()
+  homestayId: string;
 
   @IsDateString()
   checkInDate: string;
@@ -30,4 +31,11 @@ export class CreateHomestayBookingDto {
   @IsInt()
   @Min(1)
   numberOfGuests: number;
+
+  @IsOptional()
+  note?: string;
+
+  @IsIn(['homestay']) // Nếu bạn chỉ dùng type này
+  @IsOptional()
+  type?: 'homestay';
 }

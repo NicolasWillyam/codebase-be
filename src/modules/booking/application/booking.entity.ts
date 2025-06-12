@@ -19,8 +19,8 @@ export class BookingEntity {
   @Column()
   fullName: string;
 
-  @Column()
-  email: string;
+  @Column({ nullable: true }) // thêm dòng này nếu không bắt buộc có email
+  email?: string;
 
   @Column()
   phone: string;

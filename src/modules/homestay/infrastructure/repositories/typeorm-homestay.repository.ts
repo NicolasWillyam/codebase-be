@@ -35,4 +35,31 @@ export class TypeOrmHomestayRepository implements HomestayRepository {
   async delete(id: string): Promise<void> {
     await this.repo.delete(id);
   }
+
+  async search(params): Promise<HomestayEntity[]> {
+    const query = this.repo.createQueryBuilder('homestay');
+
+    if (params.city)
+      query.andWhere('homestay.city = :city', { city: params.city });
+    if (params.country)
+      query.andWhere('homestay.country = :country', {
+        country: params.country,
+      });
+    if (params.minPrice)
+      query.andWhere('homestay.pricePerNight >= :minPrice', {
+        minPrice: params.minPrice,
+      });
+    if (params.maxPrice)
+      query.andWhere('homestay.pricePerNight <= :maxPrice', {
+        maxPrice: params.maxPrice,
+      });
+    if (params.guests)
+      query.andWhere(`(homestay.rooms ->> 'guestCount')::int >= :guests`, {
+        guests: params.guests,
+      });
+
+    const entities = await query.getMany();
+
+    return entities;
+  }
 }

@@ -1,19 +1,21 @@
+// src/modules/booking/application/use-cases/get-homestay-detail.use-case.ts
 import { HomestayRepository } from '@/modules/homestay/application/ports/homestay.repository';
-import { HomestayEntity } from '@/modules/homestay/domain/homestay.entity';
-import { Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common'; // Import Inject
 
+@Injectable()
 export class GetHomestayDetailUseCase {
   constructor(
-    @Inject('HomestayRepository')
-    private readonly homestayRepository: HomestayRepository, // <-- Make sure this is correctly injected
+    @Inject('HomestayRepository') // <--- ADD THIS DECORATOR
+    private readonly homestayRepository: HomestayRepository,
   ) {}
-  async execute(homestayId: string): Promise<HomestayEntity | undefined> {
-    // Check if homestayRepository is defined before calling findById
+
+  async execute(homestayId: string): Promise<any | undefined> {
+    // Changed to any for now, adjust to HomestayEntity if correct
     if (!this.homestayRepository) {
       console.error('HomestayRepository is undefined!');
-      // Handle the error appropriately, e.g., throw a custom exception
       throw new Error('Homestay repository not initialized.');
     }
-    return this.homestayRepository.findById(homestayId); // This is line 7
+    // Assuming HomestayRepository has a findById method
+    return this.homestayRepository.findById(homestayId);
   }
 }
