@@ -1,30 +1,32 @@
+// src/modules/booking/booking.module.ts
+
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CreateBookingUseCase } from './application/use-cases/create-booking.use-case';
-import { TourBookingController } from './infrastructure/controllers/tour.booking.controller';
-import { TypeOrmBookingRepository } from './infrastructure/repositories/typeorm-booking.repository';
-import { BookingEntity } from './application/booking.entity';
-import { GetBookingsUseCase } from './application/use-cases/get-bookings.use-case';
-import { GetBookingDetailUseCase } from './application/use-cases/get-booking-detail.use-case';
-import { UpdateBookingStatusUseCase } from './application/use-cases/update-booking-status.use-case';
-import { GetMyBookingsUseCase } from './application/use-cases/get-my-bookings.use-case';
-import { HomestayBookingController } from './infrastructure/controllers/homestay.booking.controller';
-import { CreateHomestayBookingUseCase } from './application/use-cases/create-homestay-booking.use-case';
+import { TypeOrmModule } from '@nestjs/typeorm'; // Make sure to import TypeOrmModule
+import { GetHomestayDetailUseCase } from './application/use-cases/get-homestay-detail.use-case';
+import { HomestayEntity } from '../homestay/domain/homestay.entity'; // <-- IMPORTANT: Import HomestayEntity
+import { TypeOrmHomestayRepository } from '../homestay/infrastructure/repositories/typeorm-homestay.repository'; // <-- IMPORTANT: Import the concrete TypeORM repository
+import { HomestayRepository } from '../homestay/application/ports/homestay.repository'; // <-- IMPORTANT: Import the interface/abstract class
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BookingEntity])],
-  controllers: [TourBookingController, HomestayBookingController],
+  imports: [
+    // Register HomestayEntity with TypeORM for THIS module's context
+    TypeOrmModule.forFeature([HomestayEntity]),
+  ],
   providers: [
+    // Provide the HomestayRepository implementation using the string token
     {
-      provide: 'BookingRepository',
-      useClass: TypeOrmBookingRepository,
+      provide: 'HomestayRepository',
+      useClass: TypeOrmHomestayRepository,
     },
-    CreateBookingUseCase,
-    GetBookingsUseCase,
-    GetBookingDetailUseCase,
-    UpdateBookingStatusUseCase,
-    GetMyBookingsUseCase,
-    CreateHomestayBookingUseCase,
+    // Provide the use case within its "home" module
+    GetHomestayDetailUseCase,
+    // ... any other booking-related providers
+  ],
+  exports: [
+    // Export the use case if other modules need to inject it
+    GetHomestayDetailUseCase,
+    // Export the repository token if other modules need to inject it directly
+    'HomestayRepository',
   ],
 })
 export class BookingModule {}

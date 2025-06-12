@@ -9,4 +9,13 @@ export abstract class HomestayRepository {
   abstract findById(id: string): Promise<HomestayEntity>;
   abstract update(id: string, dto: UpdateHomestayDto): Promise<HomestayEntity>;
   abstract delete(id: string): Promise<void>;
+  abstract search(params: {
+    city?: string;
+    country?: string;
+    checkIn?: Date;
+    checkOut?: Date;
+    minPrice?: number;
+    maxPrice?: number;
+    guests?: number;
+  }): Promise<HomestayEntity[]>;
 }
