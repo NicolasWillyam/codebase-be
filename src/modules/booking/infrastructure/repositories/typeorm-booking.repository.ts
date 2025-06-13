@@ -19,13 +19,6 @@ export class TypeOrmBookingRepository implements BookingRepository {
     return await this.bookingRepo.save(booking);
   }
 
-  async findAllBookings(): Promise<BookingEntity[]> {
-    return this.bookingRepo.find({
-      relations: ['tour'],
-      order: { createdAt: 'DESC' },
-    });
-  }
-
   // ✅ 1. Lấy booking theo ID
   async findById(id: string): Promise<BookingEntity | null> {
     return this.bookingRepo.findOne({
@@ -41,6 +34,13 @@ export class TypeOrmBookingRepository implements BookingRepository {
   ): Promise<void> {
     await this.bookingRepo.update(id, {
       status: status as BookingStatus,
+    });
+  }
+
+  async findAllBookings(): Promise<BookingEntity[]> {
+    return this.bookingRepo.find({
+      relations: ['tour', 'homestay'], // lấy thêm nếu muốn
+      order: { createdAt: 'DESC' },
     });
   }
 

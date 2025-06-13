@@ -17,12 +17,15 @@ import { CreateHomestayBookingUseCase } from '../../application/use-cases/create
 // import { DeleteHomestayBookingUseCase } from '../../application/use-cases/delete-homestay-booking.use-case';
 
 import { CreateHomestayBookingDto } from '../dto/create-homestay-booking.dto';
+
+import { GetAllBookingsUseCase } from '../../application/use-cases/get-all-bookings.use-case';
 // import { UpdateHomestayBookingDto } from '../dto/update-homestay-booking.dto';
 
 @Controller('bookings/homestay')
 export class HomestayBookingController {
   constructor(
     private readonly createUC: CreateHomestayBookingUseCase,
+    private readonly getAllUC: GetAllBookingsUseCase,
     // private readonly getOneUC: GetHomestayBookingUseCase,
     // private readonly getAllUC: GetAllHomestayBookingsUseCase,
     // private readonly updateUC: UpdateHomestayBookingUseCase,
@@ -37,6 +40,15 @@ export class HomestayBookingController {
       status: 'success',
       message: 'Homestay booking created successfully',
       data: booking,
+    };
+  }
+
+  @Get()
+  async findAll() {
+    const bookings = await this.getAllUC.execute();
+    return {
+      status: 'success',
+      data: bookings,
     };
   }
 

@@ -10,6 +10,7 @@ import { GetMyBookingsUseCase } from './application/use-cases/get-my-bookings.us
 import { HomestayBookingController } from './infrastructure/controllers/homestay.booking.controller';
 import { CreateHomestayBookingUseCase } from './application/use-cases/create-homestay-booking.use-case';
 import { UpdateBookingUseCase } from './application/use-cases/update-booking-status.use-case';
+import { GetAllBookingsUseCase } from './application/use-cases/get-all-bookings.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([BookingEntity])],
@@ -20,6 +21,7 @@ import { UpdateBookingUseCase } from './application/use-cases/update-booking-sta
       useClass: TypeOrmBookingRepository,
     },
     CreateBookingUseCase,
+    GetAllBookingsUseCase,
     GetBookingsUseCase,
     GetBookingDetailUseCase,
     UpdateBookingUseCase,
