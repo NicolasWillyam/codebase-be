@@ -5,6 +5,7 @@ import { BookingRepository } from '../../application/ports/booking.repository';
 import { BookingEntity } from '../../application/booking.entity';
 import { CreateBookingDto } from '../dto/create-booking.dto';
 import { BookingStatus } from '../../application/constants/booking-status.enum';
+import { UpdateBookingDto } from '../dto/update-booking.dto';
 
 @Injectable()
 export class TypeOrmBookingRepository implements BookingRepository {
@@ -41,6 +42,11 @@ export class TypeOrmBookingRepository implements BookingRepository {
     await this.bookingRepo.update(id, {
       status: status as BookingStatus,
     });
+  }
+
+  async update(id: string, dto: UpdateBookingDto): Promise<BookingEntity> {
+    await this.bookingRepo.update(id, dto);
+    return this.bookingRepo.findOneBy({ id });
   }
 
   // ✅ 3. Tìm booking của 1 user theo email
